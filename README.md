@@ -576,7 +576,7 @@ Consulte [DOCKER.md](./DOCKER.md) para mais detalhes.
 
 ## 👥 Equipe
 
-Desenvolvido por *Matheus Carvalho* para o Hackathon FIAP.
+Desenvolvido por **Matheus Carvalho** para o Hackathon FIAP.
 
 ## 📞 Contato
 
