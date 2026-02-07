@@ -8,6 +8,11 @@ class AtividadeRepository {
   _toEntity(doc) {
     if (!doc) return null;
     
+    // Lida com professorId populado ou não
+    const professorId = doc.professorId._id 
+      ? doc.professorId._id.toString() 
+      : doc.professorId.toString();
+    
     return new Atividade({
       id: doc._id.toString(),
       titulo: doc.titulo,
@@ -17,7 +22,7 @@ class AtividadeRepository {
       objetivo: doc.objetivo,
       materiaisApoio: doc.materiaisApoio,
       status: doc.status,
-      professorId: doc.professorId.toString(),
+      professorId: professorId,
       isPublica: doc.isPublica,
       dataEntrega: doc.dataEntrega,
       criadoEm: doc.criadoEm,

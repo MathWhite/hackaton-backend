@@ -4,13 +4,18 @@ module.exports = {
   collectCoverageFrom: [
     'src/**/*.js',
     '!src/server.js',
+    '!src/config/database.js',
     '!src/**/*.test.js',
     '!src/**/*.spec.js'
   ],
   coverageReporters: ['text', 'lcov', 'html'],
   testMatch: [
-    '**/__tests__/**/*.js',
+    '**/__tests__/**/*.test.js',
     '**/?(*.)+(spec|test).js'
+  ],
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '/__tests__/helpers/'
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
   testTimeout: 30000,

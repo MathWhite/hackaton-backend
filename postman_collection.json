@@ -1,0 +1,352 @@
+{
+  "info": {
+    "name": "AulaPronta API",
+    "description": "Coleção completa de endpoints da API AulaPronta",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Autenticação",
+      "item": [
+        {
+          "name": "Registrar Professor",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Prof. Maria Silva\",\n  \"email\": \"maria.silva@escola.com\",\n  \"senha\": \"senha123\",\n  \"tipo\": \"professor\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/registrar",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "registrar"]
+            }
+          }
+        },
+        {
+          "name": "Registrar Aluno",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Santos\",\n  \"email\": \"joao.santos@aluno.com\",\n  \"senha\": \"senha123\",\n  \"tipo\": \"aluno\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/registrar",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "registrar"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const response = pm.response.json();",
+                  "if (response.token) {",
+                  "  pm.collectionVariables.set('token', response.token);",
+                  "  console.log('Token salvo:', response.token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"maria.silva@escola.com\",\n  \"senha\": \"senha123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Ver Perfil",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/perfil",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "perfil"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Atividades",
+      "item": [
+        {
+          "name": "Criar Atividade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau\",\n  \"descricao\": \"Exercícios práticos sobre equações quadráticas\",\n  \"disciplina\": \"Matemática\",\n  \"serie\": \"9º ano\",\n  \"objetivo\": \"Desenvolver habilidades de resolução de equações\",\n  \"materiaisApoio\": [\n    {\n      \"tipo\": \"pdf\",\n      \"conteudo\": \"https://exemplo.com/material.pdf\"\n    }\n  ],\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/atividades",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"]
+            }
+          }
+        },
+        {
+          "name": "Listar Todas Atividades",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por Disciplina",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades?disciplina=Matemática",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"],
+              "query": [
+                {
+                  "key": "disciplina",
+                  "value": "Matemática"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por Série",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades?serie=9º ano",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"],
+              "query": [
+                {
+                  "key": "serie",
+                  "value": "9º ano"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filtrar por Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades?status=publicada",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "publicada"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Buscar por ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Atividade",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau - Atualizado\",\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/atividades/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Duplicar Atividade",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades/:id/duplicar",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades", ":id", "duplicar"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Atividade",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_AQUI"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Health Check",
+      "item": [
+        {
+          "name": "Verificar Status",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["health"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

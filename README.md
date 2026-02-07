@@ -1,49 +1,78 @@
-# 🎓 AulaPronta - Backend
+# 🎓 AulaPronta - Backend API
 
 Backend da plataforma **AulaPronta**, um sistema de gestão de atividades pedagógicas para professores e alunos da rede pública de ensino.
 
 ![Node.js](https://img.shields.io/badge/Node.js-20.x-green)
 ![Express](https://img.shields.io/badge/Express-5.x-blue)
 ![MongoDB](https://img.shields.io/badge/MongoDB-7.x-green)
-![Jest](https://img.shields.io/badge/Jest-29.x-red)
+![Jest](https://img.shields.io/badge/Jest-30.x-red)
 ![Coverage](https://img.shields.io/badge/Coverage-100%25-brightgreen)
+![License](https://img.shields.io/badge/License-ISC-blue)
+
+---
+
+## 📚 Documentação Completa
+
+- 🏗️ **[Architecture Guide](./ARCHITECTURE.md)** - Arquitetura detalhada do sistema
+- 📘 **[API Documentation](./API_DOCUMENTATION.md)** - Referência completa de todos os endpoints
+- 🚀 **[Quick Start Guide](./QUICKSTART.md)** - Comece em 5 minutos com exemplos práticos
+- 🧪 **[Testing Guide](./TESTING.md)** - Guia completo de testes e cobertura
+- 🐳 **[Docker Guide](./DOCKER.md)** - Configuração e uso do Docker
+- 🚢 **[Deployment Guide](./DEPLOYMENT.md)** - Deploy em produção (AWS, GCP, Azure, Heroku, etc.)
+- 🤝 **[Contributing Guide](./CONTRIBUTING.md)** - Como contribuir com o projeto
+- 📝 **[Changelog](./CHANGELOG.md)** - Histórico de mudanças do projeto
+- 📮 **[Postman Collection](./postman_collection.json)** - Importe e teste a API
+- 🌐 **[Swagger UI](http://localhost:3000/api-docs)** - Documentação interativa (com servidor rodando)
+
+---
 
 ## 📋 Índice
 
-- [Sobre](#sobre)
-- [Arquitetura](#arquitetura)
-- [Tecnologias](#tecnologias)
-- [Pré-requisitos](#pré-requisitos)
-- [Instalação](#instalação)
-- [Configuração](#configuração)
-- [Execução](#execução)
-- [Testes](#testes)
-- [Endpoints da API](#endpoints-da-api)
-- [Estrutura do Projeto](#estrutura-do-projeto)
-- [CI/CD](#cicd)
+- [Sobre](#-sobre)
+- [Arquitetura](#-arquitetura)
+- [Tecnologias](#-tecnologias)
+- [Pré-requisitos](#-pré-requisitos)
+- [Instalação](#-instalação)
+- [Configuração](#-configuração)
+- [Execução](#-execução)
+- [Testes](#-testes)
+- [Documentação da API](#-documentação-da-api)
+  - [Swagger](#acessar-o-swagger)
+  - [Postman/Insomnia](#-postmaninsomnia-collection)
+- [Endpoints](#-endpoints)
+- [Estrutura do Projeto](#-estrutura-do-projeto)
+- [Variáveis de Ambiente](#-variáveis-de-ambiente)
+- [Docker](#-docker)
+- [Quick Start Guide](#-quick-start)
 
 ## 📖 Sobre
 
 O **AulaPronta** é uma plataforma que permite:
-- ✅ Professores criarem, organizarem e compartilharem atividades pedagógicas
-- ✅ Reaproveitamento de materiais didáticos
-- ✅ Colaboração entre educadores
-- ✅ Alunos acessarem atividades públicas
+
+- ✅ **Professores** criarem, organizarem e compartilharem atividades pedagógicas
+- ✅ **Reaproveitamento** de materiais didáticos entre educadores
+- ✅ **Colaboração** através do compartilhamento de atividades públicas
+- ✅ **Alunos** acessarem atividades disponibilizadas pelos professores
+- ✅ **Gestão** completa de atividades com filtros por disciplina, série e status
 
 ## 🏗️ Arquitetura
 
 O projeto utiliza **Clean Architecture** com separação clara de responsabilidades:
 
 ```
-┌─────────────────┐
-│  Presentation   │  ← Controllers, Routes, Middlewares
-├─────────────────┤
-│  Application    │  ← Use Cases (Business Logic)
-├─────────────────┤
-│  Domain         │  ← Entities (Core Business)
-├─────────────────┤
-│ Infrastructure  │  ← Database, Repositories
-└─────────────────┘
+┌─────────────────────────────────────────────┐
+│           Presentation Layer                 │
+│  (Controllers, Routes, Middlewares)          │
+├─────────────────────────────────────────────┤
+│          Application Layer                   │
+│         (Use Cases - Business Logic)         │
+├─────────────────────────────────────────────┤
+│            Domain Layer                      │
+│     (Entities - Core Business Rules)         │
+├─────────────────────────────────────────────┤
+│        Infrastructure Layer                  │
+│   (Database, Repositories, External APIs)    │
+└─────────────────────────────────────────────┘
 ```
 
 ### Camadas:
@@ -156,7 +185,9 @@ CORS_ORIGIN=http://localhost:5173
 | `JWT_SECRET` | Chave secreta para JWT | - |
 | `JWT_EXPIRES_IN` | Tempo de expiração do token | `7d` |
 | `CORS_ORIGIN` | Origem permitida para CORS | `http://localhost:5173` |
-Com Docker
+## 🏃 Execução
+
+### Desenvolvimento com Docker (Recomendado)
 
 ```bash
 # Inicia o MongoDB em Docker
@@ -166,7 +197,7 @@ docker-compose up -d
 npm run dev
 ```
 
-### Sem Docker
+### Desenvolvimento sem Docker
 
 ```bash
 # Certifique-se de que o MongoDB está rodando localmente
@@ -188,12 +219,89 @@ npm start
 docker-compose -f docker-compose.full.yml up --build
 ```
 
-O servidor estará rodando em: `http://localhost:3000`
+O servidor estará rodando em: **http://localhost:3000**
+
+### Acessar a Documentação
+
+Após iniciar o servidor:
+
+- **Swagger UI**: http://localhost:3000/api-docs
+- **OpenAPI JSON**: http://localhost:3000/api-docs.json
+- **Health Check**: http://localhost:3000/api/health
+
+**📚 Documentação completa de Testes**: [TESTING.md](./TESTING.md)
 
 **📚 Documentação completa do Docker**: [DOCKER.md](./DOCKER.md)
+
+## 📚 Documentação da API
+
+A API está completamente documentada com **Swagger/OpenAPI 3.0**.
+
+### Acessar o Swagger
+
+Com o servidor rodando, acesse:
+
+🔗 **http://localhost:3000/api-docs**
+
+### Recursos do Swagger
+
+- ✅ Documentação interativa de todos os endpoints
+- ✅ Testar requisições diretamente no navegador
+- ✅ Schemas de dados completos
+- ✅ Exemplos de requisições e respostas
+- ✅ Autenticação JWT integrada
+- ✅ Especificação OpenAPI em JSON
+
+### Como usar o Swagger para testar a API
+
+1. Acesse http://localhost:3000/api-docs
+2. Registre um usuário em `POST /api/auth/registrar`
+3. Faça login em `POST /api/auth/login` e copie o token
+4. Clique em **"Authorize"** no topo da página
+5. Cole o token no formato: `Bearer seu_token_aqui`
+6. Agora você pode testar todos os endpoints protegidos!
+
+### Exportar especificação OpenAPI
+
+Baixe a especificação em JSON:
+
+```bash
+curl http://localhost:3000/api-docs.json > openapi.json
 ```
 
-O servidor estará rodando em: `http://localhost:3000`
+### 📮 Postman/Insomnia Collection
+
+Uma coleção completa está disponível em [postman_collection.json](./postman_collection.json) com:
+
+- ✅ Todos os endpoints organizados por categoria
+- ✅ Variáveis de ambiente (baseUrl e token)
+- ✅ Script automático para salvar token após login
+- ✅ Exemplos de requisições com dados realistas
+
+#### Como importar no Postman
+
+1. Abra o Postman
+2. Clique em **Import**
+3. Selecione o arquivo `postman_collection.json`
+4. A coleção **AulaPronta API** será importada
+
+#### Como importar no Insomnia
+
+1. Abra o Insomnia
+2. Clique em **Application** > **Import/Export** > **Import Data**
+3. Selecione **From File**
+4. Escolha o arquivo `postman_collection.json`
+5. A coleção será importada automaticamente
+
+#### Usando a coleção
+
+1. **Registrar usuário**: Execute "Registrar Professor"
+2. **Login**: Execute "Login" - o token será salvo automaticamente
+3. **Testar endpoints**: Todos os outros endpoints já usarão o token automaticamente
+
+**Variáveis disponíveis:**
+- `{{baseUrl}}`: http://localhost:3000/api (pode ser alterado para produção)
+- `{{token}}`: Preenchido automaticamente após login
 
 ## 🧪 Testes
 
@@ -230,14 +338,16 @@ O projeto possui **100% de cobertura** de código com testes abrangentes:
 
 ## 📡 Endpoints da API
 
+> **💡 Dica**: Use o Swagger UI em http://localhost:3000/api-docs para uma documentação interativa completa!
+
 ### Base URL
 ```
 http://localhost:3000/api
 ```
 
-### Autenticação
+### 🔐 Autenticação
 
-#### `POST /auth/registrar`
+#### `POST /api/auth/registrar`
 Registra um novo usuário (professor ou aluno)
 
 **Body:**
@@ -250,62 +360,180 @@ Registra um novo usuário (professor ou aluno)
 }
 ```
 
-#### `POST /auth/login`
+**Response (201):**
+```json
+{
+  "usuario": {
+    "id": "...",
+    "nome": "João Silva",
+    "email": "joao@email.com",
+    "tipo": "professor"
+  },
+  "mensagem": "Usuário registrado com sucesso."
+}
+```
+
+#### `POST /api/auth/login`
 Realiza login e retorna token JWT
 
-#### `GET /auth/perfil`
-Retorna dados do usuário autenticado (requer autenticação)
+**Body:**
+```json
+{
+  "email": "joao@email.com",
+  "senha": "123456"
+}
+```
+
+**Response (200):**
+```json
+{
+  "usuario": { ... },
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+  "mensagem": "Login realizado com sucesso."
+}
+```
+
+#### `GET /api/auth/perfil` 🔒
+Retorna dados do usuário autenticado
+
+**Headers:**
+```
+Authorization: Bearer {token}
+```
 
 ---
 
-### Atividades
+### 📚 Atividades
 
-#### `POST /atividades`
+#### `POST /api/atividades` 🔒 👨‍🏫
 Cria uma nova atividade (somente professores)
 
-#### `GET /atividades`
-Lista atividades com filtros opcionais
+**Body:**
+```json
+{
+  "titulo": "Equações de Segundo Grau",
+  "descricao": "Exercícios práticos sobre equações",
+  "disciplina": "Matemática",
+  "serie": "9º ano",
+  "objetivo": "Desenvolver habilidades...",
+  "status": "rascunho",
+  "isPublica": false
+}
+```
 
-#### `GET /atividades/:id`
+#### `GET /api/atividades` 🔒
+Lista atividades
+- **Professores**: retorna suas atividades
+- **Alunos**: retorna apenas atividades públicas
+
+**Query Parameters:**
+- `disciplina` - Filtrar por disciplina
+- `serie` - Filtrar por série
+- `status` - Filtrar por status (rascunho, publicada)
+
+#### `GET /api/atividades/:id` 🔒
 Busca uma atividade por ID
 
-#### `PUT /atividades/:id`
+#### `PUT /api/atividades/:id` 🔒 👨‍🏫
 Atualiza uma atividade (somente professor dono)
 
-#### `DELETE /atividades/:id`
+#### `DELETE /api/atividades/:id` 🔒 👨‍🏫
 Deleta uma atividade (somente professor dono)
 
-#### `POST /atividades/:id/duplicar`
-Duplica uma atividade (somente professores)
+#### `POST /api/atividades/:id/duplicar` 🔒 👨‍🏫
+Duplica uma atividade (professores podem duplicar atividades próprias ou públicas)
 
 ---
 
-### Health Check
+### 🏥 Health Check
 
-#### `GET /health`
+#### `GET /api/health`
 Verifica status da API
+
+**Response (200):**
+```json
+{
+  "status": "OK",
+  "mensagem": "API AulaPronta está funcionando!",
+  "timestamp": "2026-02-07T..."
+}
+```
+
+**Legenda:**
+- 🔒 = Requer autenticação (token JWT)
+- 👨‍🏫 = Somente professores
 
 ## 📁 Estrutura do Projeto
 
 ```
 Backend/
 ├── src/
-│   ├── application/use-cases/   # Casos de uso (lógica de negócio)
-│   ├── config/                  # Configurações
-│   ├── domain/entities/         # Entidades de negócio
-│   ├── infrastructure/          # Database, Models, Repositories
-│   ├── presentation/            # Controllers, Routes, Middlewares
+│   ├── application/
+│   │   └── use-cases/           # Casos de uso (lógica de negócio)
+│   │       ├── CriarAtividadeUseCase.js
+│   │       ├── ListarAtividadesUseCase.js
+│   │       ├── LoginUsuarioUseCase.js
+│   │       └── RegistrarUsuarioUseCase.js
+│   │
+│   ├── config/
+│   │   ├── database.js          # Configuração MongoDB
+│   │   ├── env.js               # Variáveis de ambiente
+│   │   └── swagger.js           # Configuração Swagger/OpenAPI
+│   │
+│   ├── domain/
+│   │   └── entities/            # Entidades de negócio
+│   │       ├── Atividade.js
+│   │       └── Usuario.js
+│   │
+│   ├── infrastructure/
+│   │   ├── database/
+│   │   │   └── models/          # Modelos Mongoose
+│   │   │       ├── AtividadeModel.js
+│   │   │       └── UsuarioModel.js
+│   │   └── repositories/        # Acesso a dados
+│   │       ├── AtividadeRepository.js
+│   │       └── UsuarioRepository.js
+│   │
+│   ├── presentation/
+│   │   ├── controllers/         # Controllers da API
+│   │   │   ├── AtividadeController.js
+│   │   │   └── AuthController.js
+│   │   ├── middlewares/         # Middlewares Express
+│   │   │   ├── autenticar.js
+│   │   │   ├── autorizacao.js
+│   │   │   └── tratarErros.js
+│   │   └── routes/              # Rotas da API
+│   │       ├── atividadeRoutes.js
+│   │       ├── authRoutes.js
+│   │       └── index.js
+│   │
 │   ├── app.js                   # Configuração do Express
 │   └── server.js                # Ponto de entrada
 │
-├── __tests__/                   # Testes automatizados
-│   ├── helpers/testHelpers.js
+├── __tests__/                   # Testes automatizados (143 testes)
+│   ├── helpers/
+│   │   └── testHelpers.js
+│   ├── app.test.js
+│   ├── atividades.test.js
 │   ├── auth.test.js
-│   └── atividades.test.js
+│   ├── controllers-error.test.js
+│   ├── entities.test.js
+│   ├── middlewares.test.js
+│   ├── middlewares-unit.test.js
+│   ├── repositories.test.js
+│   └── usecases.test.js
 │
-├── .env                         # Variáveis de ambiente
-├── jest.config.js               # Configuração do Jest
-└── package.json
+├── coverage/                    # Relatórios de cobertura
+├── .env                         # Variáveis de ambiente (não versionado)
+├── .env.example                 # Exemplo de variáveis
+├── docker-compose.yml           # Docker apenas MongoDB
+├── docker-compose.full.yml      # Docker completo
+├── Dockerfile                   # Imagem do backend
+├── jest.config.js               # Configuração Jest
+├── package.json                 # Dependências NPM
+├── DOCKER.md                    # Documentação Docker
+├── TESTING.md                   # Documentação de Testes
+└── README.md                    # Documentação principal
 ```
 
 ## 🔄 CI/CD
@@ -317,8 +545,67 @@ O projeto utiliza **GitHub Actions** para automação:
 - ✅ Checkout do código
 - ✅ Setup Node.js (matriz 18.x e 20.x)
 - ✅ Instalação de dependências
-- ✅ Testes com cobertura completa
+- ✅ Testes com cobertura completa (100%)
 - ✅ Análise de código (lint)
+- ✅ Build da aplicação
+
+## 🐳 Docker
+
+O projeto inclui suporte completo para Docker:
+
+### Opções disponíveis:
+
+1. **MongoDB apenas** (`docker-compose.yml`)
+   ```bash
+   docker-compose up -d
+   ```
+
+2. **Backend + MongoDB** (`docker-compose.full.yml`)
+   ```bash
+   docker-compose -f docker-compose.full.yml up --build
+   ```
+
+Consulte [DOCKER.md](./DOCKER.md) para mais detalhes.
+
+## 🤝 Contribuindo
+
+1. Fork o projeto
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
+5. Abra um Pull Request
+
+### Padrões do Projeto
+
+- **Clean Architecture** - Separação de camadas
+- **SOLID Principles** - Código limpo e manutenível
+- **TDD/BDD** - Testes primeiro
+- **100% Coverage** - Todo código testado
+- **JSDoc** - Documentação inline
+- **Swagger** - Documentação de API
+
+## 📄 Licença
+
+Este projeto está sob a licença ISC.
+
+## 👥 Equipe
+
+Desenvolvido pela **Equipe AulaPronta** para o Hackathon FIAP.
+
+## 📞 Contato
+
+- **Email**: contato@aulapronta.com.br
+- **Website**: https://aulapronta.com.br
+
+---
+
+<div align="center">
+
+**🎓 AulaPronta - Transformando a Educação através da Tecnologia**
+
+Feito com ❤️ para professores e alunos da rede pública
+
+</div>
 - ✅ Build de produção
 - ✅ Upload de cobertura
 
@@ -327,19 +614,59 @@ O projeto utiliza **GitHub Actions** para automação:
 - Push nas branches `main` e `develop`
 - Pull Requests para `main` e `develop`
 
+## 🚀 Quick Start
+
+Quer começar rapidamente? Veja o guia completo em **[QUICKSTART.md](./QUICKSTART.md)**
+
+O guia inclui:
+
+- ✅ Exemplos práticos com curl
+- ✅ Código JavaScript/Axios pronto para usar
+- ✅ Fluxo completo de autenticação
+- ✅ CRUD de atividades com exemplos
+- ✅ Tratamento de erros
+- ✅ Filtragem e busca
+
+**Primeiro teste rápido:**
+
+```bash
+# 1. Verificar se o servidor está rodando
+curl http://localhost:3000/api/health
+
+# 2. Registrar um professor
+curl -X POST http://localhost:3000/api/auth/registrar \
+  -H "Content-Type: application/json" \
+  -d '{"nome":"Maria Silva","email":"maria@escola.com","senha":"senha123","tipo":"professor"}'
+
+# 3. Fazer login
+curl -X POST http://localhost:3000/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"maria@escola.com","senha":"senha123"}'
+```
+
+Ver guia completo: **[QUICKSTART.md](./QUICKSTART.md)**
+
 ## 🤝 Contribuindo
 
+Contribuições são muito bem-vindas! Veja o guia completo em **[CONTRIBUTING.md](./CONTRIBUTING.md)**
+
+### Processo Rápido
+
 1. Faça um fork do projeto
-2. Crie uma branch para sua feature
-3. Commit suas mudanças
-4. Push para a branch
+2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
+3. Commit suas mudanças (`git commit -m 'feat: adicionar MinhaFeature'`)
+4. Push para a branch (`git push origin feature/MinhaFeature`)
 5. Abra um Pull Request
 
 ### Padrões de Código
 
-- Use **Clean Architecture**
-- Escreva testes para todas as novas features
-- Mantenha a cobertura em 100%
+- ✅ Use **Clean Architecture**
+- ✅ Escreva testes para todas as novas features
+- ✅ Mantenha a cobertura em 100%
+- ✅ Siga os padrões de commits (Conventional Commits)
+- ✅ Execute `npm test` antes de enviar o PR
+
+**Guia completo de contribuição**: [CONTRIBUTING.md](./CONTRIBUTING.md)
 
 ## 📝 Licença
 

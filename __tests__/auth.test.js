@@ -1,7 +1,7 @@
 const request = require('supertest');
-const app = require('../../src/app');
-const UsuarioModel = require('../../src/infrastructure/database/models/UsuarioModel');
-const { criarUsuarioTeste, gerarTokenTeste } = require('../helpers/testHelpers');
+const app = require('../src/app');
+const UsuarioModel = require('../src/infrastructure/database/models/UsuarioModel');
+const { criarUsuarioTeste, gerarTokenTeste } = require('./helpers/testHelpers');
 
 describe('Auth API - Autenticação', () => {
   
@@ -278,7 +278,7 @@ describe('Auth API - Autenticação', () => {
 
     it('deve falhar ao acessar perfil de usuário inexistente', async () => {
       const jwt = require('jsonwebtoken');
-      const config = require('../../src/config/env');
+      const config = require('../src/config/env');
       
       // Cria token com ID falso
       const tokenFalso = jwt.sign(

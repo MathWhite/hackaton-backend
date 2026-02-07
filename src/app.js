@@ -1,8 +1,10 @@
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
 const config = require('./config/env');
 const routes = require('./presentation/routes');
 const tratarErros = require('./presentation/middlewares/tratarErros');
+const swaggerSpec = require('./config/swagger');
 
 class App {
   constructor() {
@@ -33,6 +35,18 @@ class App {
   }
 
   configurarRotas() {
+    // Swagger Documentation
+    this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+      customCss: '.swagger-ui .topbar { display: none }',
+      customSiteTitle: 'AulaPronta API Docs'
+    }));
+
+    // JSON da especificação OpenAPI
+    this.app.get('/api-docs.json', (req, res) => {
+      res.setHeader('Content-Type', 'application/json');
+      res.send(swaggerSpec);
+    });
+
     // Rotas da API
     this.app.use('/api', routes);
 
@@ -41,7 +55,8 @@ class App {
       res.json({
         mensagem: 'Bem-vindo à API AulaPronta! 🎓',
         versao: '1.0.0',
-        documentacao: '/api/health'
+        documentacao: '/api-docs',
+        openapi: '/api-docs.json'
       });
     });
 

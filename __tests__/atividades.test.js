@@ -1,7 +1,7 @@
 const request = require('supertest');
-const app = require('../../src/app');
-const AtividadeModel = require('../../src/infrastructure/database/models/AtividadeModel');
-const { criarProfessorComToken, criarAlunoComToken } = require('../helpers/testHelpers');
+const app = require('../src/app');
+const AtividadeModel = require('../src/infrastructure/database/models/AtividadeModel');
+const { criarProfessorComToken, criarAlunoComToken } = require('./helpers/testHelpers');
 
 describe('Atividades API - CRUD', () => {
 

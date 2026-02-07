@@ -46,10 +46,12 @@ function gerarTokenTeste(usuario) {
 /**
  * Cria um professor de teste com token
  */
-async function criarProfessorComToken() {
+async function criarProfessorComToken(emailSuffix = '') {
+  const timestamp = Date.now();
+  const suffix = emailSuffix || timestamp;
   const { usuario, senhaPlain } = await criarUsuarioTeste({
-    nome: 'Professor Teste',
-    email: 'professor@teste.com',
+    nome: `Professor Teste ${suffix}`,
+    email: `professor${suffix}@teste.com`,
     tipo: 'professor'
   });
 
@@ -65,10 +67,12 @@ async function criarProfessorComToken() {
 /**
  * Cria um aluno de teste com token
  */
-async function criarAlunoComToken() {
+async function criarAlunoComToken(emailSuffix = '') {
+  const timestamp = Date.now();
+  const suffix = emailSuffix || timestamp;
   const { usuario, senhaPlain } = await criarUsuarioTeste({
-    nome: 'Aluno Teste',
-    email: 'aluno@teste.com',
+    nome: `Aluno Teste ${suffix}`,
+    email: `aluno${suffix}@teste.com`,
     tipo: 'aluno'
   });
 

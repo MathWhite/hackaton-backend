@@ -4,7 +4,32 @@ const atividadeRoutes = require('./atividadeRoutes');
 
 const router = express.Router();
 
-// Rota de healthcheck
+/**
+ * @swagger
+ * /api/health:
+ *   get:
+ *     tags:
+ *       - Health
+ *     summary: Verifica o status da API
+ *     description: Endpoint público para verificar se a API está funcionando
+ *     responses:
+ *       200:
+ *         description: API está funcionando corretamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: string
+ *                   example: OK
+ *                 mensagem:
+ *                   type: string
+ *                   example: API AulaPronta está funcionando!
+ *                 timestamp:
+ *                   type: string
+ *                   format: date-time
+ */
 router.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
