@@ -19,8 +19,6 @@ Backend da plataforma **AulaPronta**, um sistema de gestão de atividades pedag�
 - 🧪 **[Testing Guide](./TESTING.md)** - Guia completo de testes e cobertura
 - 🐳 **[Docker Guide](./DOCKER.md)** - Configuração e uso do Docker
 - 🚢 **[Deployment Guide](./DEPLOYMENT.md)** - Deploy em produção (AWS, GCP, Azure, Heroku, etc.)
-- 🤝 **[Contributing Guide](./CONTRIBUTING.md)** - Como contribuir com o projeto
-- 📝 **[Changelog](./CHANGELOG.md)** - Histórico de mudanças do projeto
 - 📮 **[Postman Collection](./postman_collection.json)** - Importe e teste a API
 - 🌐 **[Swagger UI](http://localhost:3000/api-docs)** - Documentação interativa (com servidor rodando)
 
@@ -115,10 +113,10 @@ O projeto utiliza **Clean Architecture** com separação clara de responsabilida
 
 ```bash
 # Clone o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/MathWhite/hackaton-backend
 
-# Navegue até o diretório do backend
-cd Desenvolvimento/Backend
+# Navegue até o diretório
+cd hackaton-backend
 
 # Instale as dependências
 npm install
@@ -567,14 +565,6 @@ O projeto inclui suporte completo para Docker:
 
 Consulte [DOCKER.md](./DOCKER.md) para mais detalhes.
 
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'Adiciona MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
 ### Padrões do Projeto
 
 - **Clean Architecture** - Separação de camadas
@@ -584,30 +574,16 @@ Consulte [DOCKER.md](./DOCKER.md) para mais detalhes.
 - **JSDoc** - Documentação inline
 - **Swagger** - Documentação de API
 
-## 📄 Licença
-
-Este projeto está sob a licença ISC.
-
 ## 👥 Equipe
 
-Desenvolvido pela **Equipe AulaPronta** para o Hackathon FIAP.
+Desenvolvido por *Matheus Carvalho* para o Hackathon FIAP.
 
 ## 📞 Contato
 
-- **Email**: contato@aulapronta.com.br
-- **Website**: https://aulapronta.com.br
+- **Email**: matheusfgc99@gmail.com
+- **Website**: mc-dev.tech
 
 ---
-
-<div align="center">
-
-**🎓 AulaPronta - Transformando a Educação através da Tecnologia**
-
-Feito com ❤️ para professores e alunos da rede pública
-
-</div>
-- ✅ Build de produção
-- ✅ Upload de cobertura
 
 ### Triggers
 
@@ -646,37 +622,6 @@ curl -X POST http://localhost:3000/api/auth/login \
 
 Ver guia completo: **[QUICKSTART.md](./QUICKSTART.md)**
 
-## 🤝 Contribuindo
-
-Contribuições são muito bem-vindas! Veja o guia completo em **[CONTRIBUTING.md](./CONTRIBUTING.md)**
-
-### Processo Rápido
-
-1. Faça um fork do projeto
-2. Crie uma branch para sua feature (`git checkout -b feature/MinhaFeature`)
-3. Commit suas mudanças (`git commit -m 'feat: adicionar MinhaFeature'`)
-4. Push para a branch (`git push origin feature/MinhaFeature`)
-5. Abra um Pull Request
-
-### Padrões de Código
-
-- ✅ Use **Clean Architecture**
-- ✅ Escreva testes para todas as novas features
-- ✅ Mantenha a cobertura em 100%
-- ✅ Siga os padrões de commits (Conventional Commits)
-- ✅ Execute `npm test` antes de enviar o PR
-
-**Guia completo de contribuição**: [CONTRIBUTING.md](./CONTRIBUTING.md)
-
-## 📝 Licença
+## 📄 Licença
 
 Este projeto está sob a licença ISC.
-
-## 👥 Equipe
-
-Desenvolvido pela **Equipe AulaPronta** para o Hackathon FIAP 2026.
-
----
-
-⚡ **Status**: Em desenvolvimento ativo  
-📅 **Última atualização**: Fevereiro de 2026
