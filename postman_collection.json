@@ -135,7 +135,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau\",\n  \"descricao\": \"Exercícios práticos sobre equações quadráticas\",\n  \"disciplina\": \"Matemática\",\n  \"serie\": \"9º ano\",\n  \"objetivo\": \"Desenvolver habilidades de resolução de equações\",\n  \"materiaisApoio\": [\n    {\n      \"tipo\": \"pdf\",\n      \"conteudo\": \"https://exemplo.com/material.pdf\"\n    }\n  ],\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
+              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau\",\n  \"descricao\": \"Exercícios práticos sobre equações quadráticas\",\n  \"disciplina\": \"Matemática\",\n  \"serie\": \"9º ano\",\n  \"objetivo\": \"Desenvolver habilidades de resolução de equações\",\n  \"materiaisApoio\": [\n    {\n      \"tipo\": \"pdf\",\n      \"conteudo\": \"https://exemplo.com/material.pdf\"\n    }\n  ],\n  \"conteudo\": [\n    {\n      \"pergunta\": \"Qual é a capital do Brasil?\",\n      \"tipo\": \"alternativa\",\n      \"alternativas\": [\"Rio de Janeiro\", \"São Paulo\", \"Brasília\", \"Salvador\"],\n      \"resposta\": \"Brasília\"\n    },\n    {\n      \"pergunta\": \"Explique o conceito de fotossíntese\",\n      \"tipo\": \"dissertativa\",\n      \"alternativas\": [],\n      \"resposta\": null\n    }\n  ],\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/atividades",
@@ -269,7 +269,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau - Atualizado\",\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
+              "raw": "{\n  \"titulo\": \"Equações de Segundo Grau - Atualizado\",\n  \"conteudo\": [\n    {\n      \"pergunta\": \"Qual é a raiz quadrada de 144?\",\n      \"tipo\": \"alternativa\",\n      \"alternativas\": [\"10\", \"11\", \"12\", \"13\"],\n      \"resposta\": \"12\"\n    }\n  ],\n  \"status\": \"publicada\",\n  \"isPublica\": true\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/atividades/:id",
@@ -325,6 +325,235 @@
                 {
                   "key": "id",
                   "value": "SEU_ID_AQUI"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Usuários",
+      "item": [
+        {
+          "name": "Listar Alunos",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/alunos",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "alunos"]
+            }
+          }
+        },
+        {
+          "name": "Listar Professores",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/professores",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "professores"]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Aluno",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"João Santos Atualizado\",\n  \"email\": \"joao.novo@aluno.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/alunos/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "alunos", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_ALUNO_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Atualizar Professor",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nome\": \"Prof. Maria Silva Atualizada\",\n  \"email\": \"maria.nova@escola.com\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/professores/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "professores", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_PROFESSOR_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Aluno",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/alunos/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "alunos", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_ALUNO_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Professor",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/usuarios/professores/:id",
+              "host": ["{{baseUrl}}"],
+              "path": ["usuarios", "professores", ":id"],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_PROFESSOR_AQUI"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Respostas",
+      "item": [
+        {
+          "name": "Criar/Atualizar Respostas",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"atividadeId\": \"SEU_ID_ATIVIDADE_AQUI\",\n  \"respostas\": [\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_1_AQUI\",\n      \"resposta\": \"4\"\n    },\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_2_AQUI\",\n      \"resposta\": \"A soma é uma operação matemática básica que combina dois ou mais números\"\n    }\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/respostas",
+              "host": ["{{baseUrl}}"],
+              "path": ["respostas"]
+            }
+          }
+        },
+        {
+          "name": "Listar Respostas",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/respostas?atividadeId=SEU_ID_ATIVIDADE_AQUI",
+              "host": ["{{baseUrl}}"],
+              "path": ["respostas"],
+              "query": [
+                {
+                  "key": "atividadeId",
+                  "value": "SEU_ID_ATIVIDADE_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Deletar Resposta",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/respostas/:id?atividadeId=SEU_ID_ATIVIDADE_AQUI",
+              "host": ["{{baseUrl}}"],
+              "path": ["respostas", ":id"],
+              "query": [
+                {
+                  "key": "atividadeId",
+                  "value": "SEU_ID_ATIVIDADE_AQUI"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_RESPOSTA_AQUI"
                 }
               ]
             }

@@ -54,6 +54,30 @@ const atividadeController = new AtividadeController();
  *                     conteudo:
  *                       type: string
  *                       example: https://exemplo.com/material.pdf
+ *               conteudo:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: xxx
+ *                     pergunta:
+ *                       type: string
+ *                       example: Qual é a capital do Brasil?
+ *                     tipo:
+ *                       type: string
+ *                       enum: [alternativa, dissertativa]
+ *                       example: alternativa
+ *                     alternativas:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"]
+ *                     resposta:
+ *                       type: string
+ *                       nullable: true
+ *                       example: Brasília
  *               status:
  *                 type: string
  *                 enum: [rascunho, publicada]
@@ -219,6 +243,30 @@ router.get(
  *                 type: string
  *               objetivo:
  *                 type: string
+ *               conteudo:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     _id:
+ *                       type: string
+ *                       example: xxx
+ *                     pergunta:
+ *                       type: string
+ *                       example: Qual é a capital do Brasil?
+ *                     tipo:
+ *                       type: string
+ *                       enum: [alternativa, dissertativa]
+ *                       example: alternativa
+ *                     alternativas:
+ *                       type: array
+ *                       items:
+ *                         type: string
+ *                       example: ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"]
+ *                     resposta:
+ *                       type: string
+ *                       nullable: true
+ *                       example: Brasília
  *               status:
  *                 type: string
  *                 enum: [rascunho, publicada]

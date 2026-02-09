@@ -15,6 +15,49 @@ const MaterialApoioSchema = new mongoose.Schema({
   }
 }, { _id: true });
 
+const ConteudoSchema = new mongoose.Schema({
+  pergunta: {
+    type: String,
+    required: [true, 'Pergunta é obrigatória'],
+    trim: true
+  },
+  tipo: {
+    type: String,
+    required: [true, 'Tipo é obrigatório'],
+    enum: {
+      values: ['alternativa', 'dissertativa'],
+      message: 'Tipo deve ser "alternativa" ou "dissertativa"'
+    }
+  },
+  alternativas: {
+    type: [String],
+    default: []
+  },
+  resposta: {
+    type: String,
+    default: null
+  }
+}, { _id: true });
+
+const RespostaSchema = new mongoose.Schema({
+  alunoId: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: 'Usuario',
+    required: [true, 'Aluno/Professor é obrigatório']
+  },
+  perguntaId: {
+    type: String,
+    required: [true, 'ID da pergunta é obrigatório']
+  },
+  resposta: {
+    type: String,
+    required: [true, 'Resposta é obrigatória']
+  }
+}, { 
+  _id: true,
+  timestamps: { createdAt: 'criadoEm', updatedAt: 'atualizadoEm' }
+});
+
 const AtividadeSchema = new mongoose.Schema(
   {
     titulo: {
@@ -42,6 +85,12 @@ const AtividadeSchema = new mongoose.Schema(
       trim: true
     },
     materiaisApoio: [MaterialApoioSchema],
+    conteudo: [ConteudoSchema],
+    respostas: [RespostaSchema],
+    finalizado: {
+      type: Boolean,
+      default: false
+    },
     status: {
       type: String,
       enum: {

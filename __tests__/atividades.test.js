@@ -60,6 +60,125 @@ describe('Atividades API - CRUD', () => {
       expect(response.body.atividade.materiaisApoio).toHaveLength(2);
     });
 
+    it('deve criar atividade com conteúdo (perguntas alternativas e dissertativas)', async () => {
+      const { token } = await criarProfessorComToken();
+
+      const atividade = {
+        titulo: 'Atividade com Conteúdo',
+        descricao: 'Exercícios variados',
+        disciplina: 'Geografia',
+        serie: '7º ano',
+        conteudo: [
+          {
+            pergunta: 'Qual é a capital do Brasil?',
+            tipo: 'alternativa',
+            alternativas: ['Rio de Janeiro', 'São Paulo', 'Brasília', 'Salvador'],
+            resposta: 'Brasília'
+          },
+          {
+            pergunta: 'Explique o conceito de fotossíntese',
+            tipo: 'dissertativa',
+            alternativas: [],
+            resposta: null
+          }
+        ]
+      };
+
+      const response = await request(app)
+        .post('/api/atividades')
+        .set('Authorization', `Bearer ${token}`)
+        .send(atividade)
+        .expect(201);
+
+      expect(response.body.atividade.conteudo).toHaveLength(2);
+      expect(response.body.atividade.conteudo[0].pergunta).toBe('Qual é a capital do Brasil?');
+      expect(response.body.atividade.conteudo[0].tipo).toBe('alternativa');
+      expect(response.body.atividade.conteudo[0].alternativas).toHaveLength(4);
+      expect(response.body.atividade.conteudo[1].tipo).toBe('dissertativa');
+    });
+
+    it('deve falhar ao criar atividade com conteúdo inválido (sem pergunta)', async () => {
+      const { token } = await criarProfessorComToken();
+
+      const atividade = {
+        titulo: 'Atividade Inválida',
+        descricao: 'Teste',
+        disciplina: 'Matemática',
+        serie: '8º ano',
+        conteudo: [
+          {
+            tipo: 'alternativa',
+            alternativas: ['A', 'B', 'C'],
+            resposta: 'A'
+          }
+        ]
+      };
+
+      const response = await request(app)
+        .post('/api/atividades')
+        .set('Authorization', `Bearer ${token}`)
+        .send(atividade)
+        .expect(500);
+
+      expect(response.body).toHaveProperty('erro');
+      expect(response.body.erro).toContain('Pergunta é obrigatória');
+    });
+
+    it('deve falhar ao criar atividade com tipo de conteúdo inválido', async () => {
+      const { token } = await criarProfessorComToken();
+
+      const atividade = {
+        titulo: 'Atividade Inválida',
+        descricao: 'Teste',
+        disciplina: 'Matemática',
+        serie: '8º ano',
+        conteudo: [
+          {
+            pergunta: 'Teste?',
+            tipo: 'multipla_escolha', // tipo inválido
+            alternativas: ['A', 'B'],
+            resposta: 'A'
+          }
+        ]
+      };
+
+      const response = await request(app)
+        .post('/api/atividades')
+        .set('Authorization', `Bearer ${token}`)
+        .send(atividade)
+        .expect(500);
+
+      expect(response.body).toHaveProperty('erro');
+    });
+
+    it('deve falhar ao criar questão alternativa sem alternativas', async () => {
+      const { token } = await criarProfessorComToken();
+
+      const atividade = {
+        titulo: 'Atividade Inválida',
+        descricao: 'Teste',
+        disciplina: 'Matemática',
+        serie: '8º ano',
+        conteudo: [
+          {
+            pergunta: 'Qual é a resposta?',
+            tipo: 'alternativa',
+            alternativas: [],
+            resposta: null
+          }
+        ]
+      };
+
+      const response = await request(app)
+        .post('/api/atividades')
+        .set('Authorization', `Bearer ${token}`)
+        .send(atividade)
+        .expect(500);
+
+      expect(response.body).toHaveProperty('erro');
+      expect(response.body.erro).toContain('alternativa devem ter pelo menos uma alternativa');
+    });
+
     it('deve falhar ao criar atividade sem autenticação', async () => {
       const atividade = {
         titulo: 'Teste',

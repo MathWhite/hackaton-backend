@@ -11,6 +11,9 @@ class Atividade {
     serie,
     objetivo,
     materiaisApoio,
+    conteudo,
+    respostas,
+    finalizado,
     status,
     professorId,
     isPublica,
@@ -25,6 +28,9 @@ class Atividade {
     this.serie = serie;
     this.objetivo = objetivo;
     this.materiaisApoio = materiaisApoio || [];
+    this.conteudo = conteudo || [];
+    this.respostas = respostas || [];
+    this.finalizado = finalizado !== undefined ? finalizado : false;
     this.status = status || 'rascunho'; // 'rascunho' ou 'publicada'
     this.professorId = professorId;
     this.isPublica = isPublica || false;
@@ -96,6 +102,24 @@ class Atividade {
     const statusValidos = ['rascunho', 'publicada'];
     if (!statusValidos.includes(this.status)) {
       throw new Error('Status inválido.');
+    }
+
+    // Validar conteúdo
+    if (this.conteudo && Array.isArray(this.conteudo)) {
+      this.conteudo.forEach((item, index) => {
+        if (!item.pergunta || item.pergunta.trim().length === 0) {
+          throw new Error(`Conteúdo[${index}]: Pergunta é obrigatória.`);
+        }
+        
+        const tiposValidos = ['alternativa', 'dissertativa'];
+        if (!item.tipo || !tiposValidos.includes(item.tipo)) {
+          throw new Error(`Conteúdo[${index}]: Tipo deve ser "alternativa" ou "dissertativa".`);
+        }
+
+        if (item.tipo === 'alternativa' && (!item.alternativas || item.alternativas.length === 0)) {
+          throw new Error(`Conteúdo[${index}]: Questões de alternativa devem ter pelo menos uma alternativa.`);
+        }
+      });
     }
   }
 }

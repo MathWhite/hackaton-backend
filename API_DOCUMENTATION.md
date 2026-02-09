@@ -7,6 +7,7 @@
 - [Endpoints](#-endpoints)
   - [Health Check](#health-check)
   - [Autenticação](#endpoints-de-autenticação)
+  - [Usuários](#endpoints-de-usuários)
   - [Atividades](#endpoints-de-atividades)
 - [Schemas](#-schemas)
 - [Códigos de Status](#-códigos-de-status)
@@ -224,6 +225,272 @@ curl http://localhost:3000/api/auth/perfil \
 
 ---
 
+### Endpoints de Usuários
+
+#### `GET /api/usuarios/alunos`
+
+Lista todos os alunos cadastrados no sistema.
+
+**Autenticação**: Requerida
+
+**Headers**:
+```
+Authorization: Bearer {token}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "alunos": [
+    {
+      "id": "65abc123def456789",
+      "nome": "João Silva",
+      "email": "joao.silva@escola.com",
+      "tipo": "aluno",
+      "criadoEm": "2024-01-01T10:00:00.000Z",
+      "atualizadoEm": "2024-01-01T10:00:00.000Z"
+    }
+  ],
+  "total": 1,
+  "mensagem": "Alunos listados com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `401`: Token não fornecido ou inválido
+
+**Exemplo cURL**:
+```bash
+curl http://localhost:3000/api/usuarios/alunos \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+---
+
+#### `GET /api/usuarios/professores`
+
+Lista todos os professores cadastrados no sistema.
+
+**Autenticação**: Requerida
+
+**Headers**:
+```
+Authorization: Bearer {token}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "professores": [
+    {
+      "id": "65abc123def456789",
+      "nome": "Maria Santos",
+      "email": "maria.santos@escola.com",
+      "tipo": "professor",
+      "criadoEm": "2024-01-01T09:00:00.000Z",
+      "atualizadoEm": "2024-01-01T09:00:00.000Z"
+    }
+  ],
+  "total": 1,
+  "mensagem": "Professores listados com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `401`: Token não fornecido ou inválido
+
+**Exemplo cURL**:
+```bash
+curl http://localhost:3000/api/usuarios/professores \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+---
+
+#### `PUT /api/usuarios/alunos/:id`
+
+Atualiza os dados de um aluno.
+
+**Autenticação**: Requerida
+
+**Permissões**: O próprio aluno pode atualizar seus dados, ou um professor pode atualizar qualquer aluno.
+
+**Parâmetros de URL**:
+- `id` (string): ID do aluno a ser atualizado
+
+**Headers**:
+```
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+**Request Body**:
+```json
+{
+  "nome": "João Silva Atualizado",
+  "email": "joao.novo@escola.com"
+}
+```
+
+**Campos**:
+- `nome` (string, opcional): Novo nome do aluno
+- `email` (string, opcional): Novo email (deve ser único)
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "usuario": {
+    "id": "65abc123def456789",
+    "nome": "João Silva Atualizado",
+    "email": "joao.novo@escola.com",
+    "tipo": "aluno",
+    "criadoEm": "2024-01-01T10:00:00.000Z",
+    "atualizadoEm": "2024-01-02T15:00:00.000Z"
+  },
+  "mensagem": "Usuário atualizado com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `400`: Usuário especificado não é um aluno
+- `401`: Token não fornecido ou inválido
+- `403`: Sem permissão para atualizar este usuário
+- `404`: Aluno não encontrado
+
+**Exemplo cURL**:
+```bash
+curl -X PUT http://localhost:3000/api/usuarios/alunos/65abc123def456789 \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "João Silva Atualizado"
+  }'
+```
+
+---
+
+#### `PUT /api/usuarios/professores/:id`
+
+Atualiza os dados de um professor.
+
+**Autenticação**: Requerida
+
+**Permissões**: O próprio professor pode atualizar seus dados, ou outro professor pode atualizar.
+
+**Parâmetros de URL**:
+- `id` (string): ID do professor a ser atualizado
+
+**Headers**:
+```
+Authorization: Bearer {token}
+Content-Type: application/json
+```
+
+**Request Body**:
+```json
+{
+  "nome": "Maria Santos Atualizada",
+  "email": "maria.nova@escola.com"
+}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "usuario": {
+    "id": "65abc123def456789",
+    "nome": "Maria Santos Atualizada",
+    "email": "maria.nova@escola.com",
+    "tipo": "professor",
+    "criadoEm": "2024-01-01T09:00:00.000Z",
+    "atualizadoEm": "2024-01-02T16:00:00.000Z"
+  },
+  "mensagem": "Usuário atualizado com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `400`: Usuário especificado não é um professor
+- `401`: Token não fornecido ou inválido
+- `403`: Sem permissão para atualizar este usuário
+- `404`: Professor não encontrado
+
+---
+
+#### `DELETE /api/usuarios/alunos/:id`
+
+Deleta um aluno do sistema.
+
+**Autenticação**: Requerida
+
+**Permissões**: O próprio aluno pode se deletar, ou um professor pode deletar qualquer aluno.
+
+**Parâmetros de URL**:
+- `id` (string): ID do aluno a ser deletado
+
+**Headers**:
+```
+Authorization: Bearer {token}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "mensagem": "Usuário deletado com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `400`: Usuário especificado não é um aluno
+- `401`: Token não fornecido ou inválido
+- `403`: Sem permissão para deletar este usuário
+- `404`: Aluno não encontrado
+
+**Exemplo cURL**:
+```bash
+curl -X DELETE http://localhost:3000/api/usuarios/alunos/65abc123def456789 \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+---
+
+#### `DELETE /api/usuarios/professores/:id`
+
+Deleta um professor do sistema.
+
+**Autenticação**: Requerida
+
+**Permissões**: O próprio professor pode se deletar, ou outro professor pode deletar.
+
+**Parâmetros de URL**:
+- `id` (string): ID do professor a ser deletado
+
+**Headers**:
+```
+Authorization: Bearer {token}
+```
+
+**Resposta de Sucesso** (200):
+```json
+{
+  "mensagem": "Usuário deletado com sucesso."
+}
+```
+
+**Erros Possíveis**:
+- `400`: Usuário especificado não é um professor
+- `401`: Token não fornecido ou inválido
+- `403`: Sem permissão para deletar este usuário
+- `404`: Professor não encontrado
+
+**Exemplo cURL**:
+```bash
+curl -X DELETE http://localhost:3000/api/usuarios/professores/65abc123def456789 \
+  -H "Authorization: Bearer SEU_TOKEN_AQUI"
+```
+
+---
+
 ### Endpoints de Atividades
 
 #### `POST /api/atividades`
@@ -256,6 +523,22 @@ Content-Type: application/json
       "conteudo": "https://youtube.com/watch?v=exemplo"
     }
   ],
+  "conteudo": [
+    {
+      "_id": "xxx",
+      "pergunta": "Qual é a capital do Brasil?",
+      "tipo": "alternativa",
+      "alternativas": ["Rio de Janeiro", "São Paulo", "Brasília", "Salvador"],
+      "resposta": "Brasília"
+    },
+    {
+      "_id": "yyy",
+      "pergunta": "Explique o conceito de fotossíntese",
+      "tipo": "dissertativa",
+      "alternativas": [],
+      "resposta": null
+    }
+  ],
   "status": "publicada",
   "isPublica": true
 }
@@ -270,6 +553,12 @@ Content-Type: application/json
 - `materiaisApoio` (array, opcional): Lista de materiais de apoio
   - `tipo` (string): Tipo do material (pdf, video, link, imagem)
   - `conteudo` (string): URL ou conteúdo do material
+- `conteudo` (array, opcional): Lista de perguntas/questões da atividade
+  - `_id` (string, opcional): ID da questão (gerado automaticamente)
+  - `pergunta` (string, obrigatório): Texto da pergunta
+  - `tipo` (string, obrigatório): "alternativa" ou "dissertativa"
+  - `alternativas` (array de strings, opcional): Opções para questões de alternativa
+  - `resposta` (string, opcional): Resposta correta ou null para dissertativas
 - `status` (string, opcional): "rascunho" ou "publicada" (padrão: "rascunho")
 - `isPublica` (boolean, opcional): Se a atividade é pública (padrão: false)
 
