@@ -8,7 +8,7 @@ class CriarRespostasUseCase {
     this.atividadeRepository = atividadeRepository;
   }
 
-  async executar(atividadeId, respostas, usuarioId, usuarioTipo) {
+  async executar(atividadeId, payloadResposta, usuarioId, usuarioTipo) {
     // Busca a atividade
     const atividade = await this.atividadeRepository.buscarPorId(atividadeId);
 
@@ -21,16 +21,25 @@ class CriarRespostasUseCase {
       throw new Error('Não é possível modificar respostas de uma atividade finalizada.');
     }
 
+    // Extrai dados do payload
+    const alunoId = payloadResposta.alunoId || usuarioId; // Se não enviado, usa o usuário logado
+    const enviado = payloadResposta.enviado !== undefined ? payloadResposta.enviado : false;
+    const respostas = payloadResposta.resposta || []; // Array de {perguntaId, resposta}
+
     // Verifica permissões: alunos só podem responder atividades publicadas e públicas
     if (usuarioTipo === 'aluno') {
       if (atividade.status !== 'publicada' || !atividade.isPublica) {
         throw new Error('Esta atividade não está disponível para respostas.');
       }
+      // Alunos só podem criar respostas para si mesmos
+      if (alunoId !== usuarioId) {
+        throw new Error('Você não pode criar respostas para outro aluno.');
+      }
     }
 
-    // Professores só podem responder suas próprias atividades
+    // Professores só podem criar respostas em suas próprias atividades
     if (usuarioTipo === 'professor' && !atividade.isPertenceAoProfessor(usuarioId)) {
-      throw new Error('Você não tem permissão para responder esta atividade.');
+      throw new Error('Você não tem permissão para criar respostas nesta atividade.');
     }
 
     // Valida as respostas
@@ -55,20 +64,41 @@ class CriarRespostasUseCase {
       }
     }
 
-    // Remove respostas existentes do usuário para essa atividade e adiciona as novas
+    // Busca se já existe um documento de resposta para este aluno
     const respostasExistentes = atividade.respostas || [];
-    const respostasFiltradas = respostasExistentes.filter(
-      r => r.alunoId?.toString() !== usuarioId
+    const respostaIndex = respostasExistentes.findIndex(
+      r => r.alunoId?.toString() === alunoId
     );
 
-    // Adiciona as novas respostas
-    const novasRespostas = respostas.map(r => ({
-      alunoId: usuarioId,
+    // Prepara as novas respostas no formato do array
+    const itensResposta = respostas.map(r => ({
       perguntaId: r.perguntaId,
       resposta: r.resposta.toString()
     }));
 
-    const respostasAtualizadas = [...respostasFiltradas, ...novasRespostas];
+    let respostasAtualizadas;
+    
+    if (respostaIndex !== -1) {
+      // Atualiza o documento existente do aluno (sobrescreve completamente)
+      respostasAtualizadas = respostasExistentes.map((r, index) => {
+        if (index === respostaIndex) {
+          return {
+            alunoId: alunoId,
+            enviado: enviado,
+            resposta: itensResposta
+          };
+        }
+        return r;
+      });
+    } else {
+      // Cria novo documento de resposta para o aluno
+      const novaRespostaAluno = {
+        alunoId: alunoId,
+        enviado: enviado,
+        resposta: itensResposta
+      };
+      respostasAtualizadas = [...respostasExistentes, novaRespostaAluno];
+    }
 
     // Atualiza a atividade
     const atividadeAtualizada = await this.atividadeRepository.atualizar(

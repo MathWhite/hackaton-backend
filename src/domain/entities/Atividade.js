@@ -13,6 +13,7 @@ class Atividade {
     materiaisApoio,
     conteudo,
     respostas,
+    inscricoes,
     finalizado,
     status,
     professorId,
@@ -30,6 +31,7 @@ class Atividade {
     this.materiaisApoio = materiaisApoio || [];
     this.conteudo = conteudo || [];
     this.respostas = respostas || [];
+    this.inscricoes = inscricoes || [];
     this.finalizado = finalizado !== undefined ? finalizado : false;
     this.status = status || 'rascunho'; // 'rascunho' ou 'publicada'
     this.professorId = professorId;

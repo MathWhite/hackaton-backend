@@ -3,6 +3,7 @@ const authRoutes = require('./authRoutes');
 const atividadeRoutes = require('./atividadeRoutes');
 const usuarioRoutes = require('./usuarioRoutes');
 const respostaRoutes = require('./respostaRoutes');
+const inscricaoRoutes = require('./inscricaoRoutes');
 
 const router = express.Router();
 
@@ -51,5 +52,8 @@ router.use('/usuarios', usuarioRoutes);
 
 // Rotas de respostas
 router.use('/respostas', respostaRoutes);
+
+// Rotas de inscrições
+router.use('/inscricoes', inscricaoRoutes);
 
 module.exports = router;

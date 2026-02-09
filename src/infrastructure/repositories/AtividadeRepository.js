@@ -23,6 +23,7 @@ class AtividadeRepository {
       materiaisApoio: doc.materiaisApoio,
       conteudo: doc.conteudo,
       respostas: doc.respostas,
+      inscricoes: doc.inscricoes,
       finalizado: doc.finalizado,
       status: doc.status,
       professorId: professorId,
@@ -98,6 +99,75 @@ class AtividadeRepository {
     
     if (filtros.serie) {
       query.serie = filtros.serie;
+    }
+
+    const atividades = await AtividadeModel.find(query)
+      .populate('professorId', 'nome')
+      .sort({ criadoEm: -1 });
+    return atividades.map(a => this._toEntity(a));
+  }
+
+  /**
+   * Lista todas as atividades (para professores verem atividades de outros professores)
+   * Regra: Professor vê SUAS atividades (públicas e privadas) + atividades PÚBLICAS de outros
+   */
+  async listarTodas(professorIdLogado, filtros = {}) {
+    const query = {
+      $or: [
+        { professorId: professorIdLogado }, // Minhas atividades (todas)
+        { isPublica: true } // Atividades públicas de outros
+      ]
+    };
+    
+    // Aplicar filtros adicionais
+    if (filtros.status) {
+      query.status = filtros.status;
+    }
+    
+    if (filtros.disciplina) {
+      query.disciplina = filtros.disciplina;
+    }
+    
+    if (filtros.serie) {
+      query.serie = filtros.serie;
+    }
+    
+    // Se filtrar por professorId específico
+    if (filtros.professorId) {
+      delete query.$or;
+      query.professorId = filtros.professorId;
+      
+      // Se não for o próprio professor, só mostra públicas
+      if (filtros.professorId !== professorIdLogado.toString()) {
+        query.isPublica = true;
+      }
+    }
+
+    const atividades = await AtividadeModel.find(query)
+      .populate('professorId', 'nome email')
+      .sort({ criadoEm: -1 });
+    return atividades.map(a => this._toEntity(a));
+  }
+
+  /**
+   * Lista atividades onde o aluno está inscrito (por email)
+   */
+  async listarPorAlunoInscrito(emailAluno, filtros = {}) {
+    const query = {
+      'inscricoes.alunoEmail': emailAluno.toLowerCase().trim(),
+      status: 'publicada'
+    };
+    
+    if (filtros.disciplina) {
+      query.disciplina = filtros.disciplina;
+    }
+    
+    if (filtros.serie) {
+      query.serie = filtros.serie;
+    }
+    
+    if (filtros.professorId) {
+      query.professorId = filtros.professorId;
     }
 
     const atividades = await AtividadeModel.find(query)

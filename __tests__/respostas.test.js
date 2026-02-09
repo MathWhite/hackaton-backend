@@ -48,7 +48,7 @@ describe('Respostas API - CRUD', () => {
       // Aluno responde
       const respostas = {
         atividadeId,
-        respostas: [
+        resposta: [
           { perguntaId: perguntaId1, resposta: '4' },
           { perguntaId: perguntaId2, resposta: 'A soma é a operação matemática básica' }
         ]
@@ -62,7 +62,11 @@ describe('Respostas API - CRUD', () => {
 
       expect(response.body).toHaveProperty('mensagem');
       expect(response.body.mensagem).toContain('Respostas salvas com sucesso');
-      expect(response.body.atividade.respostas).toHaveLength(2);
+      // Agora temos 1 documento de resposta por aluno
+      expect(response.body.atividade.respostas).toHaveLength(1);
+      expect(response.body.atividade.respostas[0].alunoId).toBe(aluno._id.toString());
+      expect(response.body.atividade.respostas[0].enviado).toBe(false);
+      expect(response.body.atividade.respostas[0].resposta).toHaveLength(2);
     });
 
     it('deve sobrescrever respostas anteriores do mesmo usuário', async () => {
@@ -102,7 +106,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: '1492' }]
+          resposta: [{ perguntaId, resposta: '1492' }]
         })
         .expect(200);
 
@@ -112,12 +116,14 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: '1500' }]
+          resposta: [{ perguntaId, resposta: '1500' }]
         })
         .expect(200);
 
+      // Ainda temos 1 documento de resposta (agrupado por aluno)
       expect(response.body.atividade.respostas).toHaveLength(1);
-      expect(response.body.atividade.respostas[0].resposta).toBe('1500');
+      expect(response.body.atividade.respostas[0].resposta).toHaveLength(1);
+      expect(response.body.atividade.respostas[0].resposta[0].resposta).toBe('1500');
     });
 
     it('deve falhar ao tentar responder atividade finalizada', async () => {
@@ -149,7 +155,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId: atividadeDoc._id.toString(),
-          respostas: [
+          resposta: [
             { perguntaId: atividadeDoc.conteudo[0]._id.toString(), resposta: 'A' }
           ]
         })
@@ -192,7 +198,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId: atividadeResponse.body.atividade.id,
-          respostas: [
+          resposta: [
             { 
               perguntaId: atividadeResponse.body.atividade.conteudo[0]._id, 
               resposta: 'Teste' 
@@ -209,7 +215,7 @@ describe('Respostas API - CRUD', () => {
         .post('/api/respostas')
         .send({
           atividadeId: '507f1f77bcf86cd799439011',
-          respostas: [{ perguntaId: 'xxx', resposta: 'teste' }]
+          resposta: [{ perguntaId: 'xxx', resposta: 'teste' }]
         })
         .expect(401);
 
@@ -223,7 +229,7 @@ describe('Respostas API - CRUD', () => {
         .post('/api/respostas')
         .set('Authorization', `Bearer ${token}`)
         .send({
-          respostas: [{ perguntaId: 'xxx', resposta: 'teste' }]
+          resposta: [{ perguntaId: 'xxx', resposta: 'teste' }]
         })
         .expect(400);
 
@@ -263,7 +269,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId: atividadeResponse.body.atividade.id,
-          respostas: [{ perguntaId: 'id-inexistente', resposta: 'A' }]
+          resposta: [{ perguntaId: 'id-inexistente', resposta: 'A' }]
         })
         .expect(500);
 
@@ -312,7 +318,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: '10' }]
+          resposta: [{ perguntaId, resposta: '10' }]
         })
         .expect(200);
 
@@ -366,7 +372,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno1}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: 'Resposta aluno 1' }]
+          resposta: [{ perguntaId, resposta: 'Resposta aluno 1' }]
         })
         .expect(200);
 
@@ -376,7 +382,7 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno2}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: 'Resposta aluno 2' }]
+          resposta: [{ perguntaId, resposta: 'Resposta aluno 2' }]
         })
         .expect(200);
 
@@ -442,16 +448,16 @@ describe('Respostas API - CRUD', () => {
         .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: 'É a menor unidade da vida' }]
+          resposta: [{ perguntaId, resposta: 'É a menor unidade da vida' }]
         })
         .expect(200);
 
       const respostaId = respostaResponse.body.atividade.respostas[0]._id;
 
-      // Deletar
+      // Professor (dono da atividade) deleta a resposta do aluno
       const response = await request(app)
         .delete(`/api/respostas/${respostaId}?atividadeId=${atividadeId}`)
-        .set('Authorization', `Bearer ${tokenAluno}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
         .expect(200);
 
       expect(response.body).toHaveProperty('mensagem');
@@ -459,10 +465,10 @@ describe('Respostas API - CRUD', () => {
     });
 
     it('deve falhar ao deletar resposta de atividade finalizada', async () => {
-      const { token: tokenAluno } = await criarAlunoComToken();
-      const { professor } = await criarProfessorComToken();
+      const { aluno, token: tokenAluno } = await criarAlunoComToken();
+      const { professor, token: tokenProfessor } = await criarProfessorComToken();
 
-      // Criar atividade finalizada com resposta
+      // Criar atividade não finalizada
       const atividadeDoc = await AtividadeModel.create({
         titulo: 'Atividade Finalizada',
         descricao: 'Teste',
@@ -477,33 +483,41 @@ describe('Respostas API - CRUD', () => {
             resposta: 'A'
           }
         ],
-        respostas: [
-          {
-            alunoId: (await criarAlunoComToken()).aluno._id,
-            perguntaId: 'xxx',
-            resposta: 'A'
-          }
-        ],
         status: 'publicada',
         isPublica: true,
-        finalizado: true
+        finalizado: false
       });
 
-      const respostaId = atividadeDoc.respostas[0]._id.toString();
+      const perguntaId = atividadeDoc.conteudo[0]._id.toString();
+
+      // Criar resposta pelo aluno
+      const criacaoResponse = await request(app)
+        .post('/api/respostas')
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .send({
+          atividadeId: atividadeDoc._id.toString(),
+          resposta: [{ perguntaId, resposta: 'A' }]
+        })
+        .expect(200);
+
+      // Pega o ID da resposta criada
+      const respostaId = criacaoResponse.body.atividade.respostas[0]._id;
+
+      // Agora finaliza a atividade
+      await AtividadeModel.findByIdAndUpdate(atividadeDoc._id, { finalizado: true });
 
       const response = await request(app)
         .delete(`/api/respostas/${respostaId}?atividadeId=${atividadeDoc._id}`)
-        .set('Authorization', `Bearer ${tokenAluno}`)
+        .set('Authorization', `Bearer ${tokenProfessor}`)
         .expect(500);
 
       expect(response.body).toHaveProperty('erro');
       expect(response.body.erro).toContain('finalizada');
     });
 
-    it('deve falhar ao deletar resposta de outro usuário', async () => {
+    it('deve falhar ao deletar resposta sendo aluno', async () => {
       const { token: tokenProfessor } = await criarProfessorComToken();
-      const { token: tokenAluno1 } = await criarAlunoComToken();
-      const { token: tokenAluno2 } = await criarAlunoComToken();
+      const { token: tokenAluno } = await criarAlunoComToken();
 
       // Criar atividade
       const atividade = {
@@ -532,22 +546,76 @@ describe('Respostas API - CRUD', () => {
       const atividadeId = atividadeResponse.body.atividade.id;
       const perguntaId = atividadeResponse.body.atividade.conteudo[0]._id;
 
-      // Aluno 1 responde
+      // Aluno responde
       const respostaResponse = await request(app)
         .post('/api/respostas')
-        .set('Authorization', `Bearer ${tokenAluno1}`)
+        .set('Authorization', `Bearer ${tokenAluno}`)
         .send({
           atividadeId,
-          respostas: [{ perguntaId, resposta: 'My name is John' }]
+          resposta: [{ perguntaId, resposta: 'My name is John' }]
         })
         .expect(200);
 
       const respostaId = respostaResponse.body.atividade.respostas[0]._id;
 
-      // Aluno 2 tenta deletar
+      // Aluno tenta deletar sua própria resposta (deve falhar)
       const response = await request(app)
         .delete(`/api/respostas/${respostaId}?atividadeId=${atividadeId}`)
-        .set('Authorization', `Bearer ${tokenAluno2}`)
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .expect(500);
+
+      expect(response.body).toHaveProperty('erro');
+      expect(response.body.erro).toContain('Alunos não têm permissão');
+    });
+
+    it('deve falhar ao professor deletar resposta de atividade de outro professor', async () => {
+      const { token: tokenProfessor1 } = await criarProfessorComToken();
+      const { token: tokenProfessor2 } = await criarProfessorComToken();
+      const { token: tokenAluno } = await criarAlunoComToken();
+
+      // Professor 1 cria atividade
+      const atividade = {
+        titulo: 'Atividade Prof 1',
+        descricao: 'Teste',
+        disciplina: 'Matemática',
+        serie: '5º ano',
+        conteudo: [
+          {
+            pergunta: 'Quanto é 2+2?',
+            tipo: 'alternativa',
+            alternativas: ['3', '4', '5'],
+            resposta: '4'
+          }
+        ],
+        status: 'publicada',
+        isPublica: true
+      };
+
+      const atividadeResponse = await request(app)
+        .post('/api/atividades')
+        .set('Authorization', `Bearer ${tokenProfessor1}`)
+        .send(atividade)
+        .expect(201);
+
+      const atividadeId = atividadeResponse.body.atividade.id;
+      const perguntaId = atividadeResponse.body.atividade.conteudo[0]._id;
+
+      // Aluno responde
+      const respostaResponse = await request(app)
+        .post('/api/respostas')
+        .set('Authorization', `Bearer ${tokenAluno}`)
+        .send({
+          atividadeId,
+          resposta: [{ perguntaId, resposta: '4' }]
+        })
+        .expect(200);
+
+      const respostaId = respostaResponse.body.atividade.respostas[0]._id;
+
+      // Professor 2 tenta deletar resposta da atividade do Professor 1
+      const response = await request(app)
+        .delete(`/api/respostas/${respostaId}?atividadeId=${atividadeId}`)
+        .set('Authorization', `Bearer ${tokenProfessor2}`)
         .expect(500);
 
       expect(response.body).toHaveProperty('erro');

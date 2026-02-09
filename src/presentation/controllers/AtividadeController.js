@@ -38,12 +38,13 @@ class AtividadeController {
    */
   async listar(req, res, next) {
     try {
-      const { status, disciplina, serie } = req.query;
+      const { status, disciplina, serie, professorId } = req.query;
       const filtros = {};
 
       if (status) filtros.status = status;
       if (disciplina) filtros.disciplina = disciplina;
       if (serie) filtros.serie = serie;
+      if (professorId) filtros.professorId = professorId;
 
       const resultado = await this.listarAtividadesUseCase.executar(
         req.usuario.id,

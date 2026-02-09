@@ -36,6 +36,14 @@ const options = {
         description: 'Endpoints para gerenciamento de atividades pedagógicas'
       },
       {
+        name: 'Respostas',
+        description: 'Endpoints para gerenciamento de respostas de atividades'
+      },
+      {
+        name: 'Inscrições',
+        description: 'Endpoints para gerenciamento de inscrições de alunos em atividades'
+      },
+      {
         name: 'Health',
         description: 'Verificação de saúde da API'
       }
@@ -147,6 +155,28 @@ const options = {
               type: 'boolean',
               description: 'Se a atividade é pública',
               example: true
+            },
+            inscricoes: {
+              type: 'array',
+              description: 'Lista de alunos inscritos na atividade',
+              items: {
+                type: 'object',
+                properties: {
+                  _id: {
+                    type: 'string',
+                    example: '507f1f77bcf86cd799439011'
+                  },
+                  alunoEmail: {
+                    type: 'string',
+                    format: 'email',
+                    example: 'aluno@email.com'
+                  },
+                  inscritoEm: {
+                    type: 'string',
+                    format: 'date-time'
+                  }
+                }
+              }
             },
             dataEntrega: {
               type: 'string',

@@ -1,7 +1,10 @@
 /**
  * Use Case: Deletar Resposta
- * Remove uma resposta específica de uma atividade
+ * Remove todas as respostas de um aluno de uma atividade
  * Apenas se finalizado = false
+ * Regras de permissão:
+ * - Alunos não podem deletar respostas
+ * - Professores só podem deletar respostas de suas próprias atividades
  */
 class DeletarRespostaUseCase {
   constructor(atividadeRepository) {
@@ -21,7 +24,19 @@ class DeletarRespostaUseCase {
       throw new Error('Não é possível deletar respostas de uma atividade finalizada.');
     }
 
-    // Busca a resposta específica
+    // Verifica permissões
+    if (usuarioTipo === 'aluno') {
+      throw new Error('Alunos não têm permissão para deletar respostas.');
+    }
+
+    if (usuarioTipo === 'professor') {
+      // Professor só pode deletar respostas de suas próprias atividades
+      if (!atividade.isPertenceAoProfessor(usuarioId)) {
+        throw new Error('Você não tem permissão para deletar respostas desta atividade.');
+      }
+    }
+
+    // Busca o documento de resposta do aluno
     const respostas = atividade.respostas || [];
     const respostaIndex = respostas.findIndex(r => r._id?.toString() === respostaId);
 
@@ -29,14 +44,7 @@ class DeletarRespostaUseCase {
       throw new Error('Resposta não encontrada.');
     }
 
-    const resposta = respostas[respostaIndex];
-
-    // Verifica permissões: usuário só pode deletar suas próprias respostas
-    if (resposta.alunoId?.toString() !== usuarioId) {
-      throw new Error('Você não tem permissão para deletar esta resposta.');
-    }
-
-    // Remove a resposta
+    // Remove o documento de resposta do aluno
     respostas.splice(respostaIndex, 1);
 
     // Atualiza a atividade

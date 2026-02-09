@@ -285,29 +285,31 @@ describe('Atividades API - CRUD', () => {
       expect(response.body.atividades).toHaveLength(2);
     });
 
-    it('deve listar apenas atividades públicas para aluno', async () => {
+    it('deve listar apenas atividades nas quais o aluno está inscrito', async () => {
       const { professor } = await criarProfessorComToken();
-      const { token: tokenAluno } = await criarAlunoComToken();
+      const { aluno, token: tokenAluno } = await criarAlunoComToken();
 
-      // Cria atividades públicas e privadas
+      // Cria atividades - uma com o aluno inscrito, outra sem
       await AtividadeModel.create([
         {
-          titulo: 'Atividade Pública',
+          titulo: 'Atividade Inscrito',
           descricao: 'Desc',
           disciplina: 'Matemática',
           serie: '9º ano',
           professorId: professor._id,
-          isPublica: true,
+          inscricoes: [{ alunoEmail: aluno.email }],
+          isPublica: false,
           status: 'publicada'
         },
         {
-          titulo: 'Atividade Privada',
+          titulo: 'Atividade Não Inscrito',
           descricao: 'Desc',
           disciplina: 'Matemática',
           serie: '9º ano',
           professorId: professor._id,
+          inscricoes: [],
           isPublica: false,
-          status: 'rascunho'
+          status: 'publicada'
         }
       ]);
 
@@ -317,7 +319,7 @@ describe('Atividades API - CRUD', () => {
         .expect(200);
 
       expect(response.body.atividades).toHaveLength(1);
-      expect(response.body.atividades[0].titulo).toBe('Atividade Pública');
+      expect(response.body.atividades[0].titulo).toBe('Atividade Inscrito');
     });
 
     it('deve filtrar atividades por disciplina', async () => {
@@ -407,6 +409,100 @@ describe('Atividades API - CRUD', () => {
 
       expect(response.body.atividades).toHaveLength(1);
       expect(response.body.atividades[0].status).toBe('publicada');
+    });
+
+    it('deve filtrar atividades por professorId', async () => {
+      const { professor: professor1, token: token1 } = await criarProfessorComToken('filtro1');
+      const { professor: professor2 } = await criarProfessorComToken('filtro2');
+
+      await AtividadeModel.create([
+        {
+          titulo: 'Atividade Professor 1',
+          descricao: 'Desc',
+          disciplina: 'Matemática',
+          serie: '9º ano',
+          professorId: professor1._id,
+          status: 'publicada',
+          isPublica: true
+        },
+        {
+          titulo: 'Atividade Professor 2',
+          descricao: 'Desc',
+          disciplina: 'Matemática',
+          serie: '9º ano',
+          professorId: professor2._id,
+          status: 'publicada',
+          isPublica: true
+        }
+      ]);
+
+      const response = await request(app)
+        .get(`/api/atividades?professorId=${professor2._id}`)
+        .set('Authorization', `Bearer ${token1}`)
+        .expect(200);
+
+      expect(response.body.atividades).toHaveLength(1);
+      expect(response.body.atividades[0].titulo).toBe('Atividade Professor 2');
+    });
+
+    it('deve respeitar privacidade: professor vê suas atividades + públicas de outros', async () => {
+      // Criar Professor A
+      const { professor: professorA, token: tokenA } = await criarProfessorComToken('privA');
+      // Criar Professor B
+      const { professor: professorB, token: tokenB } = await criarProfessorComToken('privB');
+
+      // Professor A cria 2 atividades: 1 pública e 1 privada
+      await AtividadeModel.create([
+        {
+          titulo: 'Atividade Pública A',
+          descricao: 'Desc',
+          disciplina: 'Matemática',
+          serie: '9º ano',
+          professorId: professorA._id,
+          status: 'publicada',
+          isPublica: true
+        },
+        {
+          titulo: 'Atividade Privada A',
+          descricao: 'Desc',
+          disciplina: 'Matemática',
+          serie: '9º ano',
+          professorId: professorA._id,
+          status: 'publicada',
+          isPublica: false
+        }
+      ]);
+
+      // Professor B cria 1 atividade pública
+      await AtividadeModel.create({
+        titulo: 'Atividade Pública B',
+        descricao: 'Desc',
+        disciplina: 'Matemática',
+        serie: '9º ano',
+        professorId: professorB._id,
+        status: 'publicada',
+        isPublica: true
+      });
+
+      // Professor A lista: deve ver 3 (suas 2 + pública de B)
+      const responseA = await request(app)
+        .get('/api/atividades')
+        .set('Authorization', `Bearer ${tokenA}`)
+        .expect(200);
+
+      expect(responseA.body.atividades).toHaveLength(3);
+      const titulosA = responseA.body.atividades.map(a => a.titulo).sort();
+      expect(titulosA).toEqual(['Atividade Privada A', 'Atividade Pública A', 'Atividade Pública B']);
+
+      // Professor B lista: deve ver 2 (sua 1 pública + pública de A, NÃO a privada de A)
+      const responseB = await request(app)
+        .get('/api/atividades')
+        .set('Authorization', `Bearer ${tokenB}`)
+        .expect(200);
+
+      expect(responseB.body.atividades).toHaveLength(2);
+      const titulosB = responseB.body.atividades.map(a => a.titulo).sort();
+      expect(titulosB).toEqual(['Atividade Pública A', 'Atividade Pública B']);
     });
 
     it('deve retornar lista vazia se não houver atividades', async () => {

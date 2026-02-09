@@ -231,6 +231,29 @@
           }
         },
         {
+          "name": "Filtrar por Professor",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/atividades?professorId=SEU_ID_PROFESSOR_AQUI",
+              "host": ["{{baseUrl}}"],
+              "path": ["atividades"],
+              "query": [
+                {
+                  "key": "professorId",
+                  "value": "SEU_ID_PROFESSOR_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
           "name": "Buscar por ID",
           "request": {
             "method": "GET",
@@ -498,7 +521,7 @@
             ],
             "body": {
               "mode": "raw",
-              "raw": "{\n  \"atividadeId\": \"SEU_ID_ATIVIDADE_AQUI\",\n  \"respostas\": [\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_1_AQUI\",\n      \"resposta\": \"4\"\n    },\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_2_AQUI\",\n      \"resposta\": \"A soma é uma operação matemática básica que combina dois ou mais números\"\n    }\n  ]\n}"
+              "raw": "{\n  \"atividadeId\": \"SEU_ID_ATIVIDADE_AQUI\",\n  \"alunoId\": \"SEU_ID_ALUNO_AQUI\",\n  \"enviado\": false,\n  \"resposta\": [\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_1_AQUI\",\n      \"resposta\": \"4\"\n    },\n    {\n      \"perguntaId\": \"SEU_ID_PERGUNTA_2_AQUI\",\n      \"resposta\": \"A soma é uma operação matemática básica que combina dois ou mais números\"\n    }\n  ]\n}"
             },
             "url": {
               "raw": "{{baseUrl}}/respostas",
@@ -554,6 +577,88 @@
                 {
                   "key": "id",
                   "value": "SEU_ID_RESPOSTA_AQUI"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Inscrições",
+      "item": [
+        {
+          "name": "Inscrever Alunos",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"atividadeId\": \"SEU_ID_ATIVIDADE_AQUI\",\n  \"emails\": [\n    \"aluno1@email.com\",\n    \"aluno2@email.com\",\n    \"aluno3@email.com\"\n  ]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/inscricoes",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscricoes"]
+            }
+          }
+        },
+        {
+          "name": "Listar Inscrições",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inscricoes?atividadeId=SEU_ID_ATIVIDADE_AQUI",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscricoes"],
+              "query": [
+                {
+                  "key": "atividadeId",
+                  "value": "SEU_ID_ATIVIDADE_AQUI"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Remover Inscrição",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/inscricoes/:id?atividadeId=SEU_ID_ATIVIDADE_AQUI",
+              "host": ["{{baseUrl}}"],
+              "path": ["inscricoes", ":id"],
+              "query": [
+                {
+                  "key": "atividadeId",
+                  "value": "SEU_ID_ATIVIDADE_AQUI"
+                }
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "SEU_ID_INSCRICAO_AQUI"
                 }
               ]
             }

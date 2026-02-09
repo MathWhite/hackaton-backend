@@ -141,6 +141,11 @@ router.post(
  *           type: string
  *           enum: [rascunho, publicada]
  *         description: Filtrar por status
+ *       - in: query
+ *         name: professorId
+ *         schema:
+ *           type: string
+ *         description: Filtrar por ID do professor
  *     responses:
  *       200:
  *         description: Lista de atividades retornada com sucesso

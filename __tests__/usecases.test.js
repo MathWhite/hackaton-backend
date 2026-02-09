@@ -5,7 +5,7 @@ const DuplicarAtividadeUseCase = require('../src/application/use-cases/DuplicarA
 const ListarAtividadesUseCase = require('../src/application/use-cases/ListarAtividadesUseCase');
 const AtividadeRepository = require('../src/infrastructure/repositories/AtividadeRepository');
 const AtividadeModel = require('../src/infrastructure/database/models/AtividadeModel');
-const { criarProfessorComToken } = require('./helpers/testHelpers');
+const { criarProfessorComToken, criarAlunoComToken } = require('./helpers/testHelpers');
 
 describe('Use Cases', () => {
   let repository;
@@ -86,31 +86,34 @@ describe('Use Cases', () => {
       expect(resultado.total).toBe(1);
     });
 
-    it('deve listar apenas atividades públicas para aluno', async () => {
+    it('deve listar apenas atividades nas quais o aluno está inscrito', async () => {
+      const { aluno } = await criarAlunoComToken();
+
       await AtividadeModel.create({
-        titulo: 'Atividade Pública',
+        titulo: 'Atividade Inscrito',
         descricao: 'Descrição',
         disciplina: 'Matemática',
         serie: '9º ano',
         professorId: professorId,
-        isPublica: true,
+        inscricoes: [{ alunoEmail: aluno.email }],
         status: 'publicada'
       });
 
       await AtividadeModel.create({
-        titulo: 'Atividade Privada',
+        titulo: 'Atividade Não Inscrito',
         descricao: 'Descrição',
         disciplina: 'Português',
         serie: '9º ano',
         professorId: professorId,
+        inscricoes: [],
         isPublica: false
       });
 
       const useCase = new ListarAtividadesUseCase(repository);
-      const resultado = await useCase.executar('aluno123', 'aluno', {});
+      const resultado = await useCase.executar(aluno._id, 'aluno', {});
 
       expect(resultado.atividades).toHaveLength(1);
-      expect(resultado.atividades[0].isPublica).toBe(true);
+      expect(resultado.atividades[0].titulo).toBe('Atividade Inscrito');
     });
   });
 });
